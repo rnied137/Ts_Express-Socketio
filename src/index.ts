@@ -20,12 +20,16 @@ app.use(cors);
 app.use("/api", cors(corsOptions));
 app.use(express.static(path.join(path.resolve(), 'client')))
 
-const hostname = "127.0.0.1";
-const port = 4000;
 
-const server = http.createServer(app);
-const io = socket(server);
+var hostname = "127.0.0.1";
+var port = 4000;
+var server = http.createServer(app);
+var io = socket(server, { cors: { origin: "127.0.0.1" } });
 
+app.use((req, res, next) => {
+    req.io = io;
+    return next();
+});
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
